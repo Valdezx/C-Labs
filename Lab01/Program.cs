@@ -11,6 +11,7 @@ namespace Lab01
     System.Globalization.CultureInfo.InvariantCulture;
             Task1.Run();
             Task2.Run();
+            Task3.Run();
         }
 }
 }
