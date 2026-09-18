@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="ClinicApp/ClinicApp.csproj" />
   <Project Path="Lab01/Lab01.csproj" />
 </Solution>
