@@ -12,7 +12,7 @@ using System.Text;
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string BloodType { get; set; }
+        public BloodType BloodType { get; set; } = BloodType.Unknown;
         public string Phone { get; set; }
         public string Email { get; set; }
 
@@ -36,10 +36,10 @@ using System.Text;
 
         // Скорочений конструктор -> викликає повний
         public Patient(string firstName, string lastName)
-            : this(firstName, lastName, DateTime.Today, "Невідомо", "", "") { }
+            : this(firstName, lastName, DateTime.Today, BloodType.Unknown, "", "") { }
 
         // Повний конструктор -> присвоює поля та генерує Id
-        public Patient(string firstName, string lastName, DateTime dob, string bloodType, string phone, string email = "")
+        public Patient(string firstName, string lastName, DateTime dob, BloodType bloodType, string phone, string email = "")
         {
             Id = _nextId++;
             FirstName = firstName;

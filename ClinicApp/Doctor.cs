@@ -14,7 +14,7 @@ namespace ClinicApp
 
         public string LastName { get; set; }
 
-        public string Specialty { get; set; }
+        public Specialty Specialty { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
 
@@ -34,17 +34,31 @@ namespace ClinicApp
 
         public Doctor() : this("Невідомо", "Невідомо", "Невідомо") { }
 
-        public Doctor(string firstName, string lastName, string specialty) : this(firstName, lastName, specialty, "Невідомо", 0, 0) { }
+        public Doctor(string firstName, string lastName, Specialty specialty) : this(firstName, lastName, Specialty.General, "Невідомо", 0, 0) { }
 
-        public Doctor(string firstName, string lastName, string specialty, string licenseNumber, int workStartHour, int workEndHour)
+        public Doctor(string fullName, Specialty specialty, string licenseNumber, string phone, int workStartHour = 8, int workEndHour = 17)
         {
-            Id = _nextId++;
-            FirstName = firstName;
-            LastName = lastName;
+            FullName = fullName;
             Specialty = specialty;
             LicenseNumber = licenseNumber;
+            Phone = phone;
             WorkStartHour = workStartHour;
             WorkEndHour = workEndHour;
+        }
+        public string CanAcceptAt (int hour)
+        {
+            if (IsAvailable(hour))
+            {
+                return $"Зараз доступний.";
+            }
+            else
+            {
+                return $"Наразі не доступний.";
+            }
+        }
+        public override string ToString()
+        {
+            return $"Лікар  №: {Id}, Ім'я: {FullName}, Спеціалізація: {Specialty}, Ліцензія: {LicenseNumber}, Телефон: {Phone}, Робочий графік: {WorkSchedule}";
         }
     }
 }

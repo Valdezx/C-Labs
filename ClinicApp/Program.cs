@@ -12,10 +12,8 @@ internal class Program
         Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        // Створення єдиного фасадного об'єкта клініки
-        Clinic clinic = new Clinic("MedCenter Plus");
+        Clinic clinic = new Clinic("MyClinicApp");
 
-        // Початкові дані
         clinic.Patients.AddPatient(new Patient("Іван", "Петренко", new DateTime(1995, 3, 14), "A+", "+380501112233"));
         clinic.Patients.AddPatient(new Patient("Ольга", "Коваль", new DateTime(2012, 7, 21), "B-", "+380672223344"));
         clinic.Patients.AddPatient(new Patient("Петро", "Іваненко", new DateTime(1960, 11, 5), "O+", "+380933334455"));
@@ -28,6 +26,14 @@ internal class Program
         clinic.Appointments.Book(1, 1, today.AddHours(10), 30);
         clinic.Appointments.Book(2, 2, today.AddHours(11), 45);
 
+        var growable = new GrowablePatientManager();
+        Console.WriteLine($"Початкова ємність: {growable.Capacity}"); // 4
+
+        for (int i = 1; i <= 6; i++)
+        {
+            growable.AddPatient(new Patient($"Тест{i}", $"Пацієнт{i}"));
+            Console.WriteLine($"Додано [{i}]. Розмір: {growable.Count} / {growable.Capacity}");
+        }
         bool exitApp = false;
         while (!exitApp)
         {
