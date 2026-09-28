@@ -159,5 +159,19 @@ namespace ClinicApp
                 return _doctors[index];
             }
         }
+        public bool TryFindById(int id, out Doctor? doctor)
+        {
+            for (int i = 0; i < _count; i++)
+            {
+                if (_doctors[i].Id == id)
+                {
+                    doctor = _doctors[i];
+                    return true;
+                }
+            }
+
+            doctor = null;
+            return false;
+        }
     }
 }

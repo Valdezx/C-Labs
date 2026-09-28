@@ -20,6 +20,9 @@ internal class Program
         clinic.Doctors.AddDoctor(new Doctor("Олег", "Сидоренко", Speciality.Cardiologist, "LIC-001", "0441234567", 8, 16));
         clinic.Doctors.AddDoctor(new Doctor("Наталія", "Мороз", Speciality.Neurologist, "LIC-002", "0442345678", 9, 18));
         clinic.Doctors.AddDoctor(new Doctor("Андрій", "Власенко", Speciality.Pediatrician, "LIC-003", "0443456789", 8, 17));
+        Doctor[] cardiologists = clinic.Doctors.FindBySpeciality(Speciality.Cardiologist);
+        Doctor[] foundByString = clinic.Doctors.FindBySpeciality("Кардіо");
+        Console.WriteLine($"Знайдено кардіологів за enum: {cardiologists.Length}, за текстом: {foundByString.Length}");
 
         DateTime today = DateTime.Today;
         clinic.Appointments.Book(1, 1, today.AddHours(10), 30);
@@ -271,4 +274,5 @@ internal class Program
             }
         }
     }
+
 }

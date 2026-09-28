@@ -50,7 +50,7 @@ internal class AppointmentManager
         return true;
     }
 
-    // Знаходить запис та делегує виклик appointment.Cancel()
+   
     public bool Cancel(int id, string reason)
     {
         var app = FindById(id);
@@ -61,7 +61,7 @@ internal class AppointmentManager
         return false;
     }
 
-    // Знаходить запис та делегує виклик appointment.Complete()
+    
     public bool Complete(int id)
     {
         var app = FindById(id);
@@ -72,7 +72,7 @@ internal class AppointmentManager
         return false;
     }
 
-    // Всі записи конкретного пацієнта
+    
     public Appointment[] GetByPatient(int patientId)
     {
         int matchCount = 0;
@@ -96,7 +96,7 @@ internal class AppointmentManager
         return result;
     }
 
-    // Всі записи лікаря
+    
     public Appointment[] GetByDoctor(int doctorId)
     {
         int matchCount = 0;
@@ -119,8 +119,6 @@ internal class AppointmentManager
         }
         return result;
     }
-
-    // Всі записи на певну календарну дату
     public Appointment[] GetByDate(DateTime date)
     {
         int matchCount = 0;
@@ -143,8 +141,6 @@ internal class AppointmentManager
         }
         return result;
     }
-
-    // Всі майбутні активні записи
     public Appointment[] GetUpcoming()
     {
         int matchCount = 0;
@@ -230,4 +226,12 @@ internal class AppointmentManager
             return _appointments[index];
         }
     }
+    
+    public Appointment[] GetByDate(int year, int month, int day)
+    {
+        DateTime date = new DateTime(year, month, day);
+        return GetByDate(date);
+    }
+    
+ 
 }
