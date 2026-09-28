@@ -220,4 +220,14 @@ internal class AppointmentManager
         Array.Copy(_appointments, result, _count);
         return result;
     }
+    public Appointment this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _count)
+                throw new IndexOutOfRangeException($"Індекс {index} виходить за межі діапазону (0..{_count - 1}).");
+
+            return _appointments[index];
+        }
+    }
 }

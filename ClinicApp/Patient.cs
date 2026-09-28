@@ -59,7 +59,7 @@ using System.Text;
 
         public override string ToString()
         {
-            return $"[ID: {Id}] {FullName}, Вік: {Age} ({GetAgeCategory()}), Група крові: {BloodType}, Тел: {Phone}, Email: {Email}";
+            return $"[ID: {Id}] {FullName}, Вік: {ClinicFormatter.FormatAge(Age)} ({GetAgeCategory()}), Група крові: {ClinicFormatter.FormatBloodType(BloodType)}, Тел: {ClinicFormatter.FormatPhone(Phone)}, Email: {Email}";
         }
     }
 }

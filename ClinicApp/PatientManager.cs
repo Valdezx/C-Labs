@@ -124,5 +124,15 @@ namespace ClinicApp
             Console.WriteLine($"Найстарший: {maxAge} р.");
             Console.WriteLine($"Кількість дорослих (>= 18): {adultsCount}");
         }
+        public Patient this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= _count)
+                    throw new IndexOutOfRangeException($"Індекс {index} виходить за межі діапазону (0..{_count - 1}).");
+
+                return _patients[index];
+            }
+        }
     }
 }

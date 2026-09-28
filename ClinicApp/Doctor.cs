@@ -53,6 +53,6 @@ public class Doctor
 
     public override string ToString()
     {
-        return $"Лікар №: {Id}, Ім'я: {FullName}, Спеціалізація: {Speciality}, Ліцензія: {LicenseNumber}, Телефон: {Phone}, Графік: {Schedule}";
+        return $"Лікар №: {Id}, Ім'я: {FullName}, Спеціалізація: {ClinicFormatter.FormatSpeciality(Speciality)}, Ліцензія: {LicenseNumber}, Телефон: {ClinicFormatter.FormatPhone(Phone)}, Графік: {Schedule}";
     }
 }

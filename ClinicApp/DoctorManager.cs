@@ -32,29 +32,27 @@ namespace ClinicApp
             }
             return null;
         }
-        public Doctor[] FindBySpecialty(string specialty)
+        public Doctor[] FindBySpeciality(string specialityName)
         {
-            if (string.IsNullOrWhiteSpace(specialty))
-            {
-                return Array.Empty<Doctor>();
-            }
-            int matchesCount = 0;
+            int count = 0;
             for (int i = 0; i < _count; i++)
             {
-                if (_doctors[i].Specialty.Contains(specialty, StringComparison.OrdinalIgnoreCase))
+                if (_doctors[i].Speciality.ToString().Equals(specialityName, StringComparison.OrdinalIgnoreCase))
                 {
-                    matchesCount++;
+                    count++;
                 }
             }
-            Doctor[] result = new Doctor[matchesCount];
-            int resultIndex = 0;
+
+            Doctor[] result = new Doctor[count];
+            int index = 0;
             for (int i = 0; i < _count; i++)
             {
-                if (_doctors[i].Specialty.Contains(specialty, StringComparison.OrdinalIgnoreCase))
+                if (_doctors[i].Speciality.ToString().Equals(specialityName, StringComparison.OrdinalIgnoreCase))
                 {
-                    result[resultIndex++] = _doctors[i];
+                    result[index++] = _doctors[i];
                 }
             }
+
             return result;
         }
         public Doctor[] GetAllDoctors()
@@ -122,7 +120,7 @@ namespace ClinicApp
 
             for (int i = 0; i < _count; i++)
             {
-                string currentSpec = _doctors[i].Specialty;
+                string currentSpec = _doctors[i].Speciality.ToString();
                 bool alreadyCounted = false;
 
                 for (int j = 0; j < uniqueCount; j++)
@@ -139,7 +137,7 @@ namespace ClinicApp
                     int specFrequency = 0;
                     for (int k = 0; k < _count; k++)
                     {
-                        if (string.Equals(_doctors[k].Specialty, currentSpec, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(_doctors[k].Speciality.ToString(), currentSpec, StringComparison.OrdinalIgnoreCase))
                         {
                             specFrequency++;
                         }
@@ -150,6 +148,16 @@ namespace ClinicApp
                 }
             }
 
+        }
+        public Doctor this[int index]
+        {
+            get
+            {
+                if (index < 0 || index >= _count)
+                    throw new IndexOutOfRangeException($"Індекс {index} виходить за межі діапазону (0..{_count - 1}).");
+
+                return _doctors[index];
+            }
         }
     }
 }
