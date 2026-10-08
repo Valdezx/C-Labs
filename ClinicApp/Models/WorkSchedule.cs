@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClinicApp
+namespace ClinicApp.Models
 {
     public readonly struct WorkSchedule
     {

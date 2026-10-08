@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClinicApp
+namespace ClinicApp.Enums
 {
-    public class AppointmentStatus
-    {
+   
 
         public enum AppointmentStatus
         {
@@ -13,5 +12,5 @@ namespace ClinicApp
             Completed,
             Cancelled
         }
-    }
+    
 }

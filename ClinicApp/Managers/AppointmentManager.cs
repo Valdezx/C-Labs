@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 using System;
+using ClinicApp.Models;
 
-namespace ClinicApp;
+namespace ClinicApp.Managers;
 
 internal class AppointmentManager
 {

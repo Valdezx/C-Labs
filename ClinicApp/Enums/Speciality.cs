@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClinicApp
+namespace ClinicApp.Enums
 {
     
-        public enum Specialty
+        public enum Speciality
         {
             General,
             Therapist,

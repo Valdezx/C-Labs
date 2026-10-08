@@ -1,13 +1,14 @@
-﻿using System;
+﻿using ClinicApp.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace ClinicApp;
+namespace ClinicApp.Utils;
 
 public static class ClinicFormatter
 {
-    // Форматування групи крові у звичний медичний вигляд
+    
     public static string FormatBloodType(BloodType bt) => bt switch
     {
         BloodType.OPositive => "O(I)+",
@@ -21,7 +22,7 @@ public static class ClinicFormatter
         _ => "Невідомо"
     };
 
-    // Форматування спеціальності лікаря українською
+  
     public static string FormatSpeciality(Speciality s) => s switch
     {
         Speciality.General => "Загальна практика",
@@ -35,7 +36,7 @@ public static class ClinicFormatter
         _ => s.ToString()
     };
 
-    // Правила відмінювання віку: рік / роки / років
+    
     public static string FormatAge(int age)
     {
         int lastTwoDigits = age % 100;
@@ -52,7 +53,7 @@ public static class ClinicFormatter
         };
     }
 
-    // Форматування номера телефону (наприклад: 0501234567 -> (050) 123-4567)
+    
     public static string FormatPhone(string phone)
     {
         if (string.IsNullOrWhiteSpace(phone))
@@ -60,12 +61,12 @@ public static class ClinicFormatter
 
         string digits = Regex.Replace(phone, @"\D", "");
 
-        // Якщо передано 10 цифр (наприклад, 0501234567)
+        
         if (digits.Length == 10)
         {
             return $"({digits[..3]}) {digits.Substring(3, 3)}-{digits.Substring(6, 4)}";
         }
-        // Якщо передано з кодом країни 12 цифр (наприклад, 380501234567)
+        
         if (digits.Length == 12 && digits.StartsWith("38"))
         {
             return $"+38 ({digits.Substring(2, 3)}) {digits.Substring(5, 3)}-{digits.Substring(8, 4)}";

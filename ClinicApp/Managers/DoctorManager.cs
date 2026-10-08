@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ClinicApp.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClinicApp
+namespace ClinicApp.Managers
 {
     internal class DoctorManager
     {

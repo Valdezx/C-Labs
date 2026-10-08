@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using System;
+using ClinicApp.Managers;
 
 namespace ClinicApp;
 
@@ -68,7 +69,7 @@ internal class Clinic
             foreach (var doc in allDoctors)
             {
                 int docAppointmentsCount = Appointments.GetByDoctor(doc.Id).Length;
-                Console.WriteLine($"  - {doc.FullName} ({doc.Specialty}): {docAppointmentsCount} запис(ів)");
+                Console.WriteLine($"  - {doc.FullName} ({doc.Speciality}): {docAppointmentsCount} запис(ів)");
             }
         }
         

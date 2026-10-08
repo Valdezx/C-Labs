@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClinicApp
+namespace ClinicApp.Enums
 {
    
         public enum BloodType

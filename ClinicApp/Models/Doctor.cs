@@ -1,8 +1,10 @@
-﻿using System;
+﻿using ClinicApp.Enums;
+using ClinicApp.Utils;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace ClinicApp;
+namespace ClinicApp.Models;
 
 public class Doctor
 {
