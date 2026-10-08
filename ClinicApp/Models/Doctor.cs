@@ -11,11 +11,11 @@ public class Doctor
     private static int _nextId = 1;
 
     public int Id { get; }
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
+    private string FirstName { get; set; } = string.Empty;
+    private string LastName { get; set; } = string.Empty;
     public Speciality Speciality { get; set; } = Speciality.General;
-    public string LicenseNumber { get; set; } = string.Empty;
-    public string Phone { get; set; } = string.Empty;
+    private string LicenseNumber { get; set; } = string.Empty;
+    private string Phone { get; set; } = string.Empty;
 
     // Заміна окремих годин на структуру WorkSchedule
     public WorkSchedule Schedule { get; set; }

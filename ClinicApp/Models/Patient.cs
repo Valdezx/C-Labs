@@ -11,11 +11,11 @@ namespace ClinicApp.Models {
         private static int _nextId = 1;
 
         public int Id { get; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        private string _firstName = "";
+        private string _lastName = "";
+        private DateTime _dateOfBirth = "";
         public BloodType BloodType { get; set; } = BloodType.Unknown;
-        public string Phone { get; set; }
+        private string Phone { get; set; }
         public string Email { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";

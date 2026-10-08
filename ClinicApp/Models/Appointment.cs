@@ -15,7 +15,7 @@ public class Appointment
     public int PatientId { get; }
     public int DoctorId { get; }
     public DateTime ScheduledAt { get; set; }
-    public int DurationMinutes { get; set; }
+    private int DurationMinutes { get; set; }
     public AppointmentStatus Status { get; private set; } = AppointmentStatus.Scheduled;
     public string Notes { get; private set; } = string.Empty;
 
