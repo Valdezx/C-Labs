@@ -3,6 +3,7 @@ using ClinicApp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ClinicApp.Utils;
 
 
 namespace ClinicApp.Models { 
@@ -13,12 +14,51 @@ namespace ClinicApp.Models {
         public int Id { get; }
         private string _firstName = "";
         private string _lastName = "";
-        private DateTime _dateOfBirth = "";
+        private DateTime _dateOfBirth = DateTime.MinValue;
         public BloodType BloodType { get; set; } = BloodType.Unknown;
-        private string Phone { get; set; }
+        private string _phone = "";
         public string Email { get; set; }
 
         public string FullName => $"{FirstName} {LastName}";
+
+        public string FirstName
+        {
+            get => _firstName;
+
+            set
+            {
+                ClinicValidator.ValidateName(value, nameof(FirstName));
+                _firstName = value;
+            }
+        }
+        public string LastName
+        {
+            get => _lastName;
+            set
+            {
+                ClinicValidator.ValidateName(value, nameof(LastName));
+                _lastName = value;
+            }
+        }
+        public DateTime DateOfBirth
+        {
+            get => _dateOfBirth;
+            set
+            {
+                ClinicValidator.ValidateDateOfBirth(value);
+                _dateOfBirth = value;
+            }
+        }
+        public string Phone
+        {
+            get => _phone;
+            set
+            {
+            ClinicValidator.ValidatePhone(value);
+                _phone = value;
+
+            }
+        }
 
         public int Age
         {

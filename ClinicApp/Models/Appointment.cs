@@ -15,7 +15,7 @@ public class Appointment
     public int PatientId { get; }
     public int DoctorId { get; }
     public DateTime ScheduledAt { get; set; }
-    private int DurationMinutes { get; set; }
+    private int _durationMinutes = 0;
     public AppointmentStatus Status { get; private set; } = AppointmentStatus.Scheduled;
     public string Notes { get; private set; } = string.Empty;
 
@@ -60,6 +60,18 @@ public class Appointment
         }
 
         return false;
+    }
+    public int DurationMinutes
+    {
+        get => _durationMinutes;
+        set
+        {
+            if (value <= 0)
+            {
+                throw new ArgumentException("Тривалість прийому повинна бути додатнім числом.");
+            }
+            _durationMinutes = value;
+        }
     }
 
     // Перевизначений ToString: виводить рядок з ID, а не іменами

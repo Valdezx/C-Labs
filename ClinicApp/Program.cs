@@ -4,6 +4,7 @@ using System;
 using System.Globalization;
 using System.Threading;
 using ClinicApp.Models;
+using System.Linq.Expressions;
 
 
 namespace ClinicApp;
@@ -12,78 +13,81 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
-
-        Clinic clinic = new Clinic("MyClinicApp");
-
-        clinic.Patients.AddPatient(new Patient("Іван", "Петренко", new DateTime(1995, 3, 14), BloodType.APositive, "+380501112233"));
-        clinic.Patients.AddPatient(new Patient("Ольга", "Коваль", new DateTime(2012, 7, 21), BloodType.BNegative, "+380672223344"));
-        clinic.Patients.AddPatient(new Patient("Петро", "Іваненко", new DateTime(1960, 11, 5), BloodType.OPositive, "+380933334455"));
-
-        clinic.Doctors.AddDoctor(new Doctor("Олег", "Сидоренко", Speciality.Cardiologist, "LIC-001", "0441234567", 8, 16));
-        clinic.Doctors.AddDoctor(new Doctor("Наталія", "Мороз", Speciality.Neurologist, "LIC-002", "0442345678", 9, 18));
-        clinic.Doctors.AddDoctor(new Doctor("Андрій", "Власенко", Speciality.Pediatrician, "LIC-003", "0443456789", 8, 17));
         
-        DateTime today = DateTime.Today;
-        clinic.Appointments.Book(1, 1, today.AddHours(10), 30);
-        clinic.Appointments.Book(2, 2, today.AddHours(11), 45);
+        
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        var growable = new GrowablePatientManager();
-        Console.WriteLine($"Початкова ємність: {growable.Capacity}");
+            Clinic clinic = new Clinic("MyClinicApp");
 
-        for (int i = 1; i <= 6; i++)
-        {
-            growable.AddPatient(new Patient($"Тест{i}", $"Пацієнт{i}"));
-            Console.WriteLine($"Додано [{i}]. Розмір: {growable.Count} / {growable.Capacity}");
-        }
+            clinic.Patients.AddPatient(new Patient("Іван", "Петренко", new DateTime(1995, 3, 14), BloodType.APositive, "+380501112233"));
+            clinic.Patients.AddPatient(new Patient("Ольга", "Коваль", new DateTime(2012, 7, 21), BloodType.BNegative, "+380672223344"));
+            clinic.Patients.AddPatient(new Patient("Петро", "Іваненко", new DateTime(1960, 11, 5), BloodType.OPositive, "+380933334455"));
 
-        bool exitApp = false;
-        while (!exitApp)
-        {
-            Console.WriteLine($"\n===== {clinic.Name.ToUpper()} =====");
-            Console.WriteLine("1. Управління пацієнтами");
-            Console.WriteLine("2. Управління лікарями");
-            Console.WriteLine("3. Управління записами");
-            Console.WriteLine("4. Розклад на дату");
-            Console.WriteLine("5. Генерація повного звіту клініки");
-            Console.WriteLine("0. Вихід");
-            Console.Write("Оберіть пункт: ");
+            clinic.Doctors.AddDoctor(new Doctor("Олег", "Сидоренко", Speciality.Cardiologist, "LIC-001", "0441234567", 8, 16));
+            clinic.Doctors.AddDoctor(new Doctor("Наталія", "Мороз", Speciality.Neurologist, "LIC-002", "0442345678", 9, 18));
+            clinic.Doctors.AddDoctor(new Doctor("Андрій", "Власенко", Speciality.Pediatrician, "LIC-003", "0443456789", 8, 17));
 
-            string? choice = Console.ReadLine();
-            switch (choice)
+            DateTime today = DateTime.Today;
+            clinic.Appointments.Book(1, 1, today.AddHours(10), 30);
+            clinic.Appointments.Book(2, 2, today.AddHours(11), 45);
+
+            var growable = new GrowablePatientManager();
+            Console.WriteLine($"Початкова ємність: {growable.Capacity}");
+        
+        
+            for (int i = 1; i <= 6; i++)
             {
-                case "1":
-                    HandlePatientsMenu(clinic.Patients);
-                    break;
-                case "2":
-                    HandleDoctorsMenu(clinic.Doctors);
-                    break;
-                case "3":
-                    HandleAppointmentsMenu(clinic.Appointments);
-                    break;
-                case "4":
-                    Console.Write("Введіть дату (рррр-мм-дд) [Enter для поточної]: ");
-                    string? dateInput = Console.ReadLine();
-                    DateTime targetDate = string.IsNullOrWhiteSpace(dateInput)
-                        ? DateTime.Today
-                        : (DateTime.TryParse(dateInput, CultureInfo.InvariantCulture, out DateTime d) ? d : DateTime.Today);
+                growable.AddPatient(new Patient($"Тест{i}", $"Пацієнт{i}"));
+                Console.WriteLine($"Додано [{i}]. Розмір: {growable.Count} / {growable.Capacity}");
+            }
 
-                    clinic.DisplaySchedule(targetDate);
-                    break;
-                case "5":
-                    clinic.GenerateReport();
-                    break;
-                case "0":
-                    exitApp = true;
-                    Console.WriteLine("Роботу завершено.");
-                    break;
-                default:
-                    Console.WriteLine("Невідомий пункт меню.");
-                    break;
+            bool exitApp = false;
+            while (!exitApp)
+            {
+                Console.WriteLine($"\n===== {clinic.Name.ToUpper()} =====");
+                Console.WriteLine("1. Управління пацієнтами");
+                Console.WriteLine("2. Управління лікарями");
+                Console.WriteLine("3. Управління записами");
+                Console.WriteLine("4. Розклад на дату");
+                Console.WriteLine("5. Генерація повного звіту клініки");
+                Console.WriteLine("0. Вихід");
+                Console.Write("Оберіть пункт: ");
+
+                string? choice = Console.ReadLine();
+                switch (choice)
+                {
+                    case "1":
+                        HandlePatientsMenu(clinic.Patients);
+                        break;
+                    case "2":
+                        HandleDoctorsMenu(clinic.Doctors);
+                        break;
+                    case "3":
+                        HandleAppointmentsMenu(clinic.Appointments);
+                        break;
+                    case "4":
+                        Console.Write("Введіть дату (рррр-мм-дд) [Enter для поточної]: ");
+                        string? dateInput = Console.ReadLine();
+                        DateTime targetDate = string.IsNullOrWhiteSpace(dateInput)
+                            ? DateTime.Today
+                            : (DateTime.TryParse(dateInput, CultureInfo.InvariantCulture, out DateTime d) ? d : DateTime.Today);
+
+                        clinic.DisplaySchedule(targetDate);
+                        break;
+                    case "5":
+                        clinic.GenerateReport();
+                        break;
+                    case "0":
+                        exitApp = true;
+                        Console.WriteLine("Роботу завершено.");
+                        break;
+                    default:
+                        Console.WriteLine("Невідомий пункт меню.");
+                        break;
+                }
             }
         }
-    }
 
     private static void HandlePatientsMenu(PatientManager manager)
     {
@@ -273,7 +277,8 @@ internal class Program
                     back = true;
                     break;
             }
+
         }
     }
-
 }
+

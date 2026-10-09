@@ -11,11 +11,56 @@ public class Doctor
     private static int _nextId = 1;
 
     public int Id { get; }
-    private string FirstName { get; set; } = string.Empty;
-    private string LastName { get; set; } = string.Empty;
+    private string _firstName = "";
+    private string _lastName = "";
     public Speciality Speciality { get; set; } = Speciality.General;
-    private string LicenseNumber { get; set; } = string.Empty;
-    private string Phone { get; set; } = string.Empty;
+    private string _licenseNumber = "";
+    private string _phone = "";
+
+    public string FirstName
+    {
+        get => _firstName;
+
+        set
+        { 
+            ClinicValidator.ValidateName(value, nameof(FirstName));
+            _firstName = value.Trim();
+          
+        }
+    }
+    public string LastName
+    {
+        get => _lastName;
+        set
+        {
+            ClinicValidator.ValidateName(value, nameof(LastName));
+            _lastName = value.Trim();
+        }
+    }
+    public string LicenseNumber
+    {
+        get => _licenseNumber;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException("Номер ліцензії не може бути порожнім.");
+            }
+            else
+            {
+                _licenseNumber = value.Trim();
+            }
+        }
+    }
+    public string Phone
+    {
+        get => _phone;
+        set
+        {
+            ClinicValidator.ValidatePhone(value);
+            _phone = value.Trim();
+        }
+    }
 
     // Заміна окремих годин на структуру WorkSchedule
     public WorkSchedule Schedule { get; set; }
