@@ -14,6 +14,7 @@ internal class Clinic
     public DoctorManager Doctors { get; }
     public AppointmentManager Appointments { get; }
 
+    public MedicalRecordManager MedicalRecords { get; } = new MedicalRecordManager();
     public Clinic(string name)
     {
         Name = name;
