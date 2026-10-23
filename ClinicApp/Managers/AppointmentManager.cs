@@ -4,6 +4,7 @@ using System.Text;
 
 using System;
 using ClinicApp.Models;
+using ClinicApp.Interfaces;
 
 namespace ClinicApp.Managers;
 
@@ -217,6 +218,19 @@ internal class AppointmentManager
         Array.Copy(_appointments, result, _count);
         return result;
     }
+    public static int CancelAll(ICancellable1[] items, string reason = "")
+    {
+        int count = 0;
+        foreach (var item in items)
+        {
+            if (item != null && item.Cancel(reason))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+    
     public Appointment this[int index]
     {
         get
