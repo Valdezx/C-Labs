@@ -3,103 +3,120 @@ using ClinicApp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using ClinicApp.Interfaces;
 
-namespace ClinicApp.Models;
-
-public class Doctor
+namespace ClinicApp.Models
 {
-    private static int _nextId = 1;
-
-    public int Id { get; }
-    private string _firstName = "";
-    private string _lastName = "";
-    public Speciality Speciality { get; set; } = Speciality.General;
-    private string _licenseNumber = "";
-    private string _phone = "";
-
-    public string FirstName
+    public class Doctor : ISchedulable
     {
-        get => _firstName;
+        private static int _nextId = 1;
 
-        set
-        { 
-            ClinicValidator.ValidateName(value, nameof(FirstName));
-            _firstName = value.Trim();
-          
-        }
-    }
-    public string LastName
-    {
-        get => _lastName;
-        set
+        public int Id { get; }
+        private string _firstName = "";
+        private string _lastName = "";
+        public Speciality Speciality { get; set; } = Speciality.General;
+        private string _licenseNumber = "";
+        private string _phone = "";
+
+        public string FirstName
         {
-            ClinicValidator.ValidateName(value, nameof(LastName));
-            _lastName = value.Trim();
-        }
-    }
-    public string LicenseNumber
-    {
-        get => _licenseNumber;
-        set
-        {
-            if (string.IsNullOrWhiteSpace(value))
+            get => _firstName;
+            set
             {
-                throw new ArgumentException("Номер ліцензії не може бути порожнім.");
-            }
-            else
-            {
-                _licenseNumber = value.Trim();
+                ClinicValidator.ValidateName(value, nameof(FirstName));
+                _firstName = value.Trim();
             }
         }
-    }
-    public string Phone
-    {
-        get => _phone;
-        set
+
+        public string LastName
         {
-            ClinicValidator.ValidatePhone(value);
-            _phone = value.Trim();
+            get => _lastName;
+            set
+            {
+                ClinicValidator.ValidateName(value, nameof(LastName));
+                _lastName = value.Trim();
+            }
         }
-    }
 
-    // Заміна окремих годин на структуру WorkSchedule
-    public WorkSchedule Schedule { get; set; }
+        public string LicenseNumber
+        {
+            get => _licenseNumber;
+            set
+            {
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    throw new ArgumentException("Номер ліцензії не може бути порожнім.");
+                }
+                else
+                {
+                    _licenseNumber = value.Trim();
+                }
+            }
+        }
 
-    public string FullName => $"{FirstName} {LastName}".Trim();
+        public string Phone
+        {
+            get => _phone;
+            set
+            {
+                ClinicValidator.ValidatePhone(value);
+                _phone = value.Trim();
+            }
+        }
 
-    public bool IsAvailable(int hour) => Schedule.Contains(hour);
+        public WorkSchedule Schedule { get; set; }
 
-    // Конструктор за замовчуванням
-    public Doctor()
-        : this("Невідомо", "Невідомо", Speciality.General, "LIC-000", "", new WorkSchedule(8, 17)) { }
+        public string FullName => $"{FirstName} {LastName}".Trim();
 
-    // Скорочений конструктор
-    public Doctor(string firstName, string lastName, Speciality speciality)
-        : this(firstName, lastName, speciality, "LIC-000", "", new WorkSchedule(8, 17)) { }
+        public bool IsAvailable(int hour) => Schedule.Contains(hour);
 
-    // Конструктор, який приймає години окремо (для зручності сумісності)
-    public Doctor(string firstName, string lastName, Speciality speciality, string licenseNumber, string phone, int workStartHour, int workEndHour)
-        : this(firstName, lastName, speciality, licenseNumber, phone, new WorkSchedule(workStartHour, workEndHour)) { }
+        public Doctor()
+            : this("Невідомо", "Невідомо", Speciality.General, "LIC-000", "", new WorkSchedule(8, 17)) { }
 
-    // Повний конструктор зі структурою WorkSchedule
-    public Doctor(string firstName, string lastName, Speciality speciality, string licenseNumber, string phone, WorkSchedule schedule)
-    {
-        Id = _nextId++;
-        FirstName = firstName;
-        LastName = lastName;
-        Speciality = speciality;
-        LicenseNumber = licenseNumber;
-        Phone = phone;
-        Schedule = schedule;
-    }
+        public Doctor(string firstName, string lastName, Speciality speciality)
+            : this(firstName, lastName, speciality, "LIC-000", "", new WorkSchedule(8, 17)) { }
 
-    public string CanAcceptAt(int hour)
-    {
-        return IsAvailable(hour) ? "Зараз доступний." : "Наразі не доступний.";
-    }
+        public Doctor(string firstName, string lastName, Speciality speciality, string licenseNumber, string phone, int workStartHour, int workEndHour)
+            : this(firstName, lastName, speciality, licenseNumber, phone, new WorkSchedule(workStartHour, workEndHour)) { }
 
-    public override string ToString()
-    {
-        return $"Лікар №: {Id}, Ім'я: {FullName}, Спеціалізація: {ClinicFormatter.FormatSpeciality(Speciality)}, Ліцензія: {LicenseNumber}, Телефон: {ClinicFormatter.FormatPhone(Phone)}, Графік: {Schedule}";
+        public Doctor(string firstName, string lastName, Speciality speciality, string licenseNumber, string phone, WorkSchedule schedule)
+        {
+            Id = _nextId++;
+            FirstName = firstName;
+            LastName = lastName;
+            Speciality = speciality;
+            LicenseNumber = licenseNumber;
+            Phone = phone;
+            Schedule = schedule;
+        }
+
+        public string CanAcceptAt(int hour)
+        {
+            return IsAvailable(hour) ? "Зараз доступний." : "Наразі не доступний.";
+        }
+
+        public override string ToString()
+        {
+            return $"Лікар №: {Id}, Ім'я: {FullName}, Спеціалізація: {ClinicFormatter.FormatSpeciality(Speciality)}, Ліцензія: {LicenseNumber}, Телефон: {ClinicFormatter.FormatPhone(Phone)}, Графік: {Schedule}";
+        }
+
+        public bool CanSchedule(DateTime at)
+        {
+            return Schedule.Contains(at.Hour);
+        }
+
+        public DateTime[] GetAvailableSlots(DateTime date, int slotCount)
+        {
+            ClinicValidator.ValidatePositive(slotCount, nameof(slotCount));
+            var slots = new List<DateTime>();
+            for (int h = 0; h < 24 && slots.Count < slotCount; h++)
+            {
+                if (Schedule.Contains(h))
+                {
+                    slots.Add(date.Date.AddHours(h));
+                }
+            }
+            return slots.ToArray();
+        }
     }
 }
