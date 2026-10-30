@@ -25,7 +25,9 @@ public class Program
         clinic.Doctors.AddDoctor(new Doctor("Олег", "Сидоренко", Speciality.Cardiologist, "LIC-001", "0441234567", 8, 16));
         clinic.Doctors.AddDoctor(new Doctor("Наталія", "Мороз", Speciality.Neurologist, "LIC-002", "0442345678", 9, 18));
         clinic.Doctors.AddDoctor(new Doctor("Андрій", "Власенко", Speciality.Pediatrician, "LIC-003", "0443456789", 8, 17));
-
+        clinic.Appointments.Book(1, 1, new DateTime(2024, 6, 15, 10, 0, 0), 30);
+        clinic.Appointments.BookSpecialist(2, 2, new DateTime(2024, 6, 15, 11, 0, 0), "Терміновий випадок", 45);
+        clinic.Appointments.BookUrgent(3, 3, new DateTime(2024, 6, 15, 12, 0, 0), "Терміновий випадок", 30);
         DateTime today = DateTime.Today;
         clinic.Appointments.Book(1, 1, today.AddHours(10), 30);
         clinic.Appointments.Book(2, 2, today.AddHours(11), 45);
