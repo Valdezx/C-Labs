@@ -8,10 +8,14 @@ using ClinicApp.Interfaces;
 
 namespace ClinicApp.Managers;
 
-internal class AppointmentManager
+public class AppointmentManager
 {
     private const int MaxAppointments = 500;
-    private readonly Appointment[] _appointments = new Appointment[MaxAppointments];
+    private readonly RegularAppointment[] _appointments = new RegularAppointment[MaxAppointments];
+
+    private readonly  UrgentAppointment[] _urgentAppointments = new UrgentAppointment[MaxAppointments];
+
+    private readonly SpecialistAppointment[] _specialistAppointments = new SpecialistAppointment[MaxAppointments];
     private int _count = 0;
 
     private readonly PatientManager _patients;
@@ -46,13 +50,56 @@ internal class AppointmentManager
             return false;
         }
 
-        var appointment = new Appointment(patientId, doctorId, scheduledAt, durationMinutes);
+        var appointment = new RegularAppointment(patientId, doctorId, scheduledAt, durationMinutes);
         _appointments[_count++] = appointment;
         Console.WriteLine($"Запис #{appointment.Id} успішно заброньовано.");
         return true;
     }
+    public bool BookUrgent(int patientId, int doctorId, DateTime scheduledAt,string urgencyNote, int durationMinutes = 30)
+    {
+        if (_count >= MaxAppointments)
+        {
+            Console.WriteLine("Помилка: досягнуто ліміту записів (500).");
+            return false;
+        }
+        if (_patients.FindById(patientId) == null)
+        {
+            Console.WriteLine($"Помилка: пацієнта з ID [{patientId}] не існує.");
+            return false;
+        }
+        if (_doctors.FindById(doctorId) == null)
+        {
+            Console.WriteLine($"Помилка: лікаря з ID [{doctorId}] не існує.");
+            return false;
+        }
+        var appointment = new UrgentAppointment(patientId, doctorId, scheduledAt, urgencyNote, durationMinutes= 30);
+        _urgentAppointments[_count++] = appointment;
+        Console.WriteLine($"Терміновий запис #{appointment.Id} успішно заброньовано.");
+        return true;
+    }
+    public bool BookSpecialist(int patientId, int doctorId, DateTime scheduledAt, string consulationTopic, int durationMinutes = 30)
+    {
+        if (_count >= MaxAppointments)
+        {
+            Console.WriteLine("Помилка: досягнуто ліміту записів (500).");
+            return false;
+        }
+        if (_patients.FindById(patientId) == null)
+        {
+            Console.WriteLine($"Помилка: пацієнта з ID [{patientId}] не існує.");
+            return false;
+        }
+        if (_doctors.FindById(doctorId) == null)
+        {
+            Console.WriteLine($"Помилка: лікаря з ID [{doctorId}] не існує.");
+            return false;
+        }
+        var appointment = new SpecialistAppointment(patientId, doctorId, scheduledAt, consulationTopic, durationMinutes);
+        _specialistAppointments[_count++] = appointment;
+        Console.WriteLine($"Запис до спеціаліста #{appointment.Id} успішно заброньовано.");
+        return true;
+    }
 
-   
     public bool Cancel(int id, string reason)
     {
         var app = FindById(id);
@@ -218,7 +265,7 @@ internal class AppointmentManager
         Array.Copy(_appointments, result, _count);
         return result;
     }
-    public static int CancelAll(ICancellable1[] items, string reason = "")
+    public static int CancelAll(ICancellable[] items, string reason = "")
     {
         int count = 0;
         foreach (var item in items)
