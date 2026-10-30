@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ClinicApp.Managers
 {
-    internal class PatientManager
+    public class PatientManager
     {
         private const int MaxPatients = 100;
 

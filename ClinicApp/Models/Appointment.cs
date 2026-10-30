@@ -49,11 +49,18 @@ namespace ClinicApp.Models
             }
         }
 
-        public decimal GetCost()
+        public virtual decimal GetCost()
         {
             return (decimal)DurationMinutes * 10m;
         }
-
+        public virtual string GetDescription()
+        {
+            return $"Прийом у лікаря (ID: {DoctorId}) для пацієнта (ID: {PatientId}) на {DurationMinutes} хвилин, запланований на {ScheduledAt:yyyy-MM-dd HH:mm}.";
+        }
+        public int GetPriority()
+        {
+            return 3;
+        }
         public void MarkPaid()
         {
             if (Status == AppointmentStatus.Cancelled)
@@ -105,7 +112,7 @@ namespace ClinicApp.Models
 
         public override string ToString()
         {
-            string baseInfo = $"[Запис #{Id}] Пацієнт ID: {PatientId} | Лікар ID: {DoctorId} | Час: {ScheduledAt:yyyy-MM-dd HH:mm}-{EndsAt:HH:mm} ({DurationMinutes} хв) | Статус: {Status}";
+            string baseInfo = GetDescription();
 
             if (!string.IsNullOrWhiteSpace(Notes))
             {

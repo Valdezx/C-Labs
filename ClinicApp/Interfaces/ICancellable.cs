@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ClinicApp.Models;
+using ClinicApp.Utils;
+
 
 namespace ClinicApp.Interfaces
 {
-    internal interface ICancellable1
+    public interface ICancellable
     {
         public bool IsCancelled { get; }
 

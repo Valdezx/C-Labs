@@ -89,7 +89,7 @@ public class Program
         bool back = false;
         while (!back)
         {
-            Console.WriteLine("\n--- Рахунки ----------------");
+            Console.WriteLine("\n------«Рахунки»-----");
             Console.WriteLine("1. Борги пацієнта");
             Console.WriteLine("2. Всі неоплачені записи");
             Console.WriteLine("3. Оплатити запис");
@@ -167,7 +167,7 @@ public class Program
         bool back = false;
         while (!back)
         {
-            Console.WriteLine("\n--- Підменю «Медична картка» ---");
+            Console.WriteLine("\n------«Медична картка»-----");
             Console.WriteLine("1. Картка пацієнта");
             Console.WriteLine("2. Усі записи пацієнта");
             Console.WriteLine("3. Додати діагноз");
@@ -302,7 +302,7 @@ public class Program
         bool back = false;
         while (!back)
         {
-            Console.WriteLine("\n--- Підменю «Пацієнти» ---");
+            Console.WriteLine("\n------«Пацієнти»-----");
             Console.WriteLine("1. Показати всіх");
             Console.WriteLine("2. Додати пацієнта");
             Console.WriteLine("3. Знайти за ім'ям / прізвищем");
@@ -359,7 +359,7 @@ public class Program
         bool back = false;
         while (!back)
         {
-            Console.WriteLine("\n--- Підменю «Лікарі» ---");
+            Console.WriteLine("\n------«Лікарі»-----");
             Console.WriteLine("1. Показати всіх лікарів");
             Console.WriteLine("2. Знайти за ID");
             Console.WriteLine("3. Знайти за спеціальністю");
@@ -452,13 +452,14 @@ public class Program
         bool back = false;
         while (!back)
         {
-            Console.WriteLine("\n--- Підменю «Записи» ---");
+            Console.WriteLine("\n------«Записи»-----");
             Console.WriteLine("1. Показати всі записи");
             Console.WriteLine("2. Забронювати запис");
             Console.WriteLine("3. Скасувати запис");
             Console.WriteLine("4. Завершити прийом");
             Console.WriteLine("5. Майбутні записи");
             Console.WriteLine("8. Скасувати всі записи пацієнта");
+            Console.WriteLine("9. За типом прийому");
             Console.WriteLine("0. Назад");
             Console.Write("Оберіть дію: ");
 
@@ -514,6 +515,31 @@ public class Program
                     else
                     {
                         Console.WriteLine("Невірний ID пацієнта.");
+                    }
+                    break;
+                case "9":
+                    Console.WriteLine("\n--- Виберіть тип прийому ---");
+                    Console.WriteLine("1. Термінові");
+                    Console.WriteLine("2. Консультації спеціаліста");
+                    Console.WriteLine("3. Звичайні");
+                    Console.Write("Оберіть варіант: ");
+                    string? typeChoice = Console.ReadLine();
+
+                    Appointment[] filteredAppointments = typeChoice switch
+                    {
+                        "1" => manager.GetUrgent(),
+                        "2" => manager.GetSpecialist(),
+                        "3" => manager.GetRegular(),
+                        _ => Array.Empty<Appointment>()
+                    };
+
+                    if (filteredAppointments.Length == 0)
+                    {
+                        Console.WriteLine("Список записів обраного типу не знайдено.");
+                    }
+                    else
+                    {
+                        manager.DisplayList(filteredAppointments);
                     }
                     break;
                 case "0":

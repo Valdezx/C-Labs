@@ -99,6 +99,71 @@ public class AppointmentManager
         Console.WriteLine($"Запис до спеціаліста #{appointment.Id} успішно заброньовано.");
         return true;
     }
+    public RegularAppointment[] GetRegular()
+    {
+        int matchCount = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] != null)
+            {
+                matchCount++;
+            }
+        }
+        var result = new RegularAppointment[matchCount];
+        int idx = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] != null)
+            {
+                result[idx++] = _appointments[i];
+            }
+        }
+        return result;
+    }
+    public UrgentAppointment[] GetUrgent()
+    {
+        int matchCount = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_urgentAppointments[i] != null)
+            {
+                matchCount++;
+            }
+        }
+        var result = new UrgentAppointment[matchCount];
+        int idx = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_urgentAppointments[i] != null)
+            {
+                result[idx++] = _urgentAppointments[i];
+            }
+        }
+        return result;
+
+    }
+    public SpecialistAppointment[] GetSpecialist()
+    {
+        int matchCount = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_specialistAppointments[i] != null)
+            {
+                matchCount++;
+            }
+        }
+        var result = new SpecialistAppointment[matchCount];
+        int idx = 0;
+        for (int i = 0; i < _count; i++)
+        {
+            if (_specialistAppointments[i] != null)
+            {
+                result[idx++] = _specialistAppointments[i];
+            }
+        }
+        return result;
+    }
+
 
     public bool Cancel(int id, string reason)
     {
@@ -223,7 +288,8 @@ public class AppointmentManager
         string patientName = patient != null ? patient.FullName : $"ID:{appointment.PatientId} (видалений)";
         string doctorName = doctor != null ? doctor.FullName : $"ID:{appointment.DoctorId} (видалений)";
 
-        string line = $"[Запис #{appointment.Id}] Пацієнт: {patientName} | Лікар: {doctorName} | Час: {appointment.ScheduledAt:yyyy-MM-dd HH:mm}-{appointment.EndsAt:HH:mm} ({appointment.DurationMinutes} хв) | Статус: {appointment.Status}";
+        string line = $"[{appointment.Id}] {appointment.GetDescription()} | Пацієнт: {patientName} -> Лікар: {doctorName} | Час: {appointment.ScheduledAt:yyyy-MM-dd HH:mm}-{appointment.EndsAt:HH:mm} | Статус: {appointment.Status}" +
+            $" | Вартість: {appointment.GetCost():F2} грн";
 
         if (!string.IsNullOrWhiteSpace(appointment.Notes))
         {

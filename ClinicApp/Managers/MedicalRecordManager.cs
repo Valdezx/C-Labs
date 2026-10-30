@@ -1,5 +1,8 @@
 ﻿using System;
 using ClinicApp.Models;
+using ClinicApp.Interfaces;
+using ClinicApp.Utils;
+using ClinicApp.Managers;
 
 namespace ClinicApp.Managers
 {
@@ -9,6 +12,7 @@ namespace ClinicApp.Managers
         private int _count = 0;
 
         public int Count => _count;
+        
 
         public void Add(MedicalRecord record)
         {
