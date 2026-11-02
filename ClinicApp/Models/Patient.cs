@@ -3,10 +3,9 @@ using ClinicApp.Utils;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using ClinicApp.Utils;
 
-
-namespace ClinicApp.Models { 
+namespace ClinicApp.Models
+{
     public class Patient
     {
         private static int _nextId = 1;
@@ -14,23 +13,23 @@ namespace ClinicApp.Models {
         public int Id { get; }
         private string _firstName = "";
         private string _lastName = "";
-        private DateTime _dateOfBirth = DateTime.MinValue;
+        private DateTime _dateOfBirth = DateTime.Today;
         public BloodType BloodType { get; set; } = BloodType.Unknown;
         private string _phone = "";
-        public string Email { get; set; }
+        public string Email { get; set; } = "";
 
         public string FullName => $"{FirstName} {LastName}";
 
         public string FirstName
         {
             get => _firstName;
-
             set
             {
                 ClinicValidator.ValidateName(value, nameof(FirstName));
                 _firstName = value;
             }
         }
+
         public string LastName
         {
             get => _lastName;
@@ -40,6 +39,7 @@ namespace ClinicApp.Models {
                 _lastName = value;
             }
         }
+
         public DateTime DateOfBirth
         {
             get => _dateOfBirth;
@@ -49,14 +49,17 @@ namespace ClinicApp.Models {
                 _dateOfBirth = value;
             }
         }
+
         public string Phone
         {
             get => _phone;
             set
             {
-            ClinicValidator.ValidatePhone(value);
+                if (!string.IsNullOrEmpty(value))
+                {
+                    ClinicValidator.ValidatePhone(value);
+                }
                 _phone = value;
-
             }
         }
 
@@ -73,14 +76,12 @@ namespace ClinicApp.Models {
 
         public bool IsAdult => Age >= 18;
 
-        // Конструктор за замовчуванням -> викликає скорочений
+      
         public Patient() : this("Невідомо", "Невідомо") { }
 
-        // Скорочений конструктор -> викликає повний
+      
         public Patient(string firstName, string lastName)
             : this(firstName, lastName, DateTime.Today, BloodType.Unknown, "", "") { }
-
-        // Повний конструктор -> присвоює поля та генерує Id
         public Patient(string firstName, string lastName, DateTime dob, BloodType bloodType, string phone, string email = "")
         {
             Id = _nextId++;
