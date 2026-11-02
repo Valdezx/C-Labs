@@ -48,7 +48,8 @@ public class Program
             Console.WriteLine("3. Управління записами");
             Console.WriteLine("4. Медична картка з пунктами");
             Console.WriteLine("5. Рахунки");
-            Console.WriteLine("6. Генерація повного звіту клініки");
+            Console.WriteLine("6.Черга - очікування, прийом пацієнтів");
+            Console.WriteLine("7. Генерація повного звіту клініки");
             Console.WriteLine("0. Вихід");
             Console.Write("Оберіть пункт: ");
 
@@ -71,6 +72,9 @@ public class Program
                     HandleBillingMenu(clinic);
                     break;
                 case "6":
+                    WaitingRoomMenu(clinic.WaitingRoom);
+                    break;
+                case "7":
                     clinic.GenerateReport();
                     break;
                 case "0":
@@ -84,6 +88,76 @@ public class Program
         }
     }
 
+    private static void WaitingRoomMenu(WaitingQueue<Patient> waitingRoom)
+    {
+        bool back = false;
+        while (!back)
+        {
+            Console.WriteLine("\n------«Черга очікування»-----");
+            Console.WriteLine("1. Додати пацієнта в чергу");
+            Console.WriteLine("2. Прийняти пацієнта з черги");
+            Console.WriteLine("3. Переглянути наступного пацієнта");
+            Console.WriteLine("4. Показати всіх пацієнтів у черзі");
+            Console.WriteLine("0. Назад");
+            Console.Write("Оберіть пункт: ");
+            string? choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "1":
+                    Console.Write("Введіть ім'я пацієнта: ");
+                    string firstName = Console.ReadLine() ?? "";
+                    Console.Write("Введіть прізвище пацієнта: ");
+                    string lastName = Console.ReadLine() ?? "";
+                    Patient newPatient = new Patient(firstName, lastName, DateTime.Now, BloodType.Unknown, "");
+                    waitingRoom.Enqueue(newPatient);
+                    Console.WriteLine($"Пацієнт {newPatient.FullName} доданий у чергу.");
+                    break;
+                case "2":
+                    if (!waitingRoom.IsEmpty)
+                    {
+                        Patient nextPatient = waitingRoom.Dequeue();
+                        Console.WriteLine($"Пацієнт {nextPatient.FullName} прийнятий.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Черга порожня.");
+                    }
+                    break;
+                case "3":
+                    if (!waitingRoom.IsEmpty)
+                    {
+                        Patient nextPatient = waitingRoom.Peek();
+                        Console.WriteLine($"Наступний пацієнт у черзі: {nextPatient.FullName}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Черга порожня.");
+                    }
+                    break;
+                case "4":
+                    if (!waitingRoom.IsEmpty)
+                    {
+                        Patient[] patientsArray = waitingRoom.ToArray();
+                        Console.WriteLine("Пацієнти у черзі:");
+                        foreach (var patient in patientsArray)
+                        {
+                            Console.WriteLine(patient.FullName);
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Черга порожня.");
+                    }
+                    break;
+                case "0":
+                    back = true;
+                    break;
+                default:
+                    Console.WriteLine("Невідомий пункт меню.");
+                    break;
+            }
+        }
+    }
     private static void HandleBillingMenu(Clinic clinic)
     {
         bool back = false;

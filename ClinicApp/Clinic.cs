@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ClinicApp.Models;
+using ClinicApp.Enums;
 using ClinicApp.Managers;
 
 namespace ClinicApp
@@ -13,7 +15,6 @@ namespace ClinicApp
         public AppointmentManager Appointments { get; }
         public BillingManager Billing { get; }
         public MedicalRecordManager MedicalRecords { get; } = new MedicalRecordManager();
-
         public Clinic(string name)
         {
             Name = name;
@@ -46,6 +47,7 @@ namespace ClinicApp
                 Console.WriteLine($"[{app.Id}] {pName} -> {dName} | {app.ScheduledAt:dd.MM.yyyy HH:mm}-{app.EndsAt:HH:mm} | {app.Status}");
             }
         }
+        public WaitingQueue<Patient> WaitingRoom { get; } = new WaitingQueue<Patient>();
 
         public void GenerateReport()
         {
