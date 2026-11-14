@@ -1,12 +1,13 @@
-﻿using ClinicApp.Enums;
+﻿using ClinicApp.Comparators;
+using ClinicApp.Enums;
+using ClinicApp.Interfaces;
 using ClinicApp.Managers;
+using ClinicApp.Models;
+using ClinicApp.Utils;
 using System;
 using System.Globalization;
 using System.Threading;
-using ClinicApp.Models;
-using ClinicApp.Utils;
-using ClinicApp.Interfaces;
-
+using ClinicApp.Comparators;
 namespace ClinicApp;
 
 public class Program
@@ -38,7 +39,6 @@ public class Program
         clinic.MedicalRecords.Add(new LabResult(5, 2, 2, today.AddDays(-22), "Загальні нотатки", "Аналіз сечі", 6.2, "ммоль/л", "3.3-6.1", false));
         clinic.MedicalRecords.Add(new Prescription(2, 1, 1, today.AddDays(-1), "Загальні нотатки", "Ібупрофен", "400 мг", 10, "1 таб. 2 рази на день"));
         clinic.MedicalRecords.Add(new Prescription(2, 2, 2, today, "Загальні нотатки", "Амоксицилін", "500 мг", 7, "1 таб. 3 рази на день"));
-
         bool exitApp = false;
         while (!exitApp)
         {
@@ -50,6 +50,7 @@ public class Program
             Console.WriteLine("5. Рахунки");
             Console.WriteLine("6.Черга - очікування, прийом пацієнтів");
             Console.WriteLine("7. Генерація повного звіту клініки");
+            Console.WriteLine("8.Аналітика");
             Console.WriteLine("0. Вихід");
             Console.Write("Оберіть пункт: ");
 
@@ -76,6 +77,9 @@ public class Program
                     break;
                 case "7":
                     clinic.GenerateReport();
+                    break;
+                case "8":
+                    AnalyticsMenu(clinic);
                     break;
                 case "0":
                     exitApp = true;
@@ -622,4 +626,100 @@ public class Program
             }
         }
     }
+    private static List<DoctorStats> CollectDoctorStats(Clinic clinic)
+    {
+        List<DoctorStats> statsList = new List<DoctorStats>();
+        foreach (var doctor in clinic.Doctors.GetAllDoctors()) 
+        {
+            statsList.Add(new DoctorStats( 
+                doctor.Id,
+                doctor.FullName,
+                0,
+                0m,
+                DateTime.Now
+            ));
+        }
+        return statsList;
+    }
+
+    private static List<PatientStats> CollectPatientStats(Clinic clinic)
+    {
+        List<PatientStats> statsList = new List<PatientStats>();
+        // Аналогічно для пацієнтів
+        foreach (var patient in clinic.Patients.GetAll()) 
+        {
+            statsList.Add(new PatientStats(
+                patient.Id,
+                patient.FullName,
+                0,
+                0m,
+                DateTime.Now
+            ));
+        }
+        return statsList;
+    }
+
+    private static void AnalyticsMenu(Clinic clinic)
+    {
+        bool back = false;
+        while (!back)
+        {
+            Console.WriteLine("\n--- Аналітика ---");
+            Console.WriteLine("1. Лікарі за навантаженням");
+            Console.WriteLine("2. Лікарі за виручкою");
+            Console.WriteLine("3. Лікарі за Іменем");
+            Console.WriteLine("4. Пацієнти за кількістю візитів");
+            Console.WriteLine("5. Пацієнти за витратами");
+            Console.WriteLine("0. Назад");
+            Console.Write("Оберіть пункт: ");
+
+            string? choice = Console.ReadLine();
+            switch (choice)
+            {
+                case "1":
+                    {
+                        var list = CollectDoctorStats(clinic);
+                        list.Sort(); 
+                        foreach (var item in list) Console.WriteLine(item);
+                        break;
+                    }
+                case "2":
+                    {
+                        var list = CollectDoctorStats(clinic);
+                        list.Sort(new DoctorStatsByRevenue()); 
+                        foreach (var item in list) Console.WriteLine(item);
+                        break;
+                    }
+                case "3":
+                    {
+                        var list = CollectDoctorStats(clinic);
+                        list.Sort(new DoctorStatsByName()); 
+                        foreach (var item in list) Console.WriteLine(item);
+                        break;
+                    }
+                case "4":
+                    {
+                        var list = CollectPatientStats(clinic);
+                        list.Sort(); 
+                        foreach (var item in list) Console.WriteLine(item);
+                        break;
+                    }
+                case "5":
+                    {
+                        var list = CollectPatientStats(clinic);
+                        list.Sort(new PatientStatsBySpent()); 
+                        foreach (var item in list) Console.WriteLine(item);
+                        break;
+                    }
+                case "0":
+                    back = true;
+                    break;
+                default:
+                    Console.WriteLine("Невідомий пункт меню.");
+                    break;
+            }
+        }
+    }
 }
+
+
