@@ -11,6 +11,7 @@ namespace ClinicApp
     {
         public string Name { get; set; }
         public PatientManager Patients { get; }
+        public TreatmentPlanManager TreatmentPlans { get; }
         public DoctorManager Doctors { get; }
         public AppointmentManager Appointments { get; }
         public BillingManager Billing { get; }
@@ -22,6 +23,7 @@ namespace ClinicApp
             Doctors = new DoctorManager();
             Appointments = new AppointmentManager(Patients, Doctors);
             Billing = new BillingManager(Appointments);
+            TreatmentPlans = new TreatmentPlanManager();
         }
 
         public void DisplaySchedule(DateTime date)

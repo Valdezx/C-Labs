@@ -51,6 +51,7 @@ public class Program
             Console.WriteLine("6.Черга - очікування, прийом пацієнтів");
             Console.WriteLine("7. Генерація повного звіту клініки");
             Console.WriteLine("8.Аналітика");
+            Console.WriteLine("9. Управління планами лікування");
             Console.WriteLine("0. Вихід");
             Console.Write("Оберіть пункт: ");
 
@@ -80,6 +81,9 @@ public class Program
                     break;
                 case "8":
                     AnalyticsMenu(clinic);
+                    break;
+                case "9":
+                    ShowTreatmentPlansMenu(clinic);
                     break;
                 case "0":
                     exitApp = true;
@@ -645,7 +649,6 @@ public class Program
     private static List<PatientStats> CollectPatientStats(Clinic clinic)
     {
         List<PatientStats> statsList = new List<PatientStats>();
-        // Аналогічно для пацієнтів
         foreach (var patient in clinic.Patients.GetAll()) 
         {
             statsList.Add(new PatientStats(
@@ -720,6 +723,154 @@ public class Program
             }
         }
     }
+    private static void ShowTreatmentPlansMenu(Clinic clinic)
+    {
+        while (true)
+        {
+            Console.WriteLine("\n--- Плани лікування ---");
+            Console.WriteLine("1. Показати всі плани");
+            Console.WriteLine("2. Додати план лікування");
+            Console.WriteLine("3. Плани пацієнта");
+            Console.WriteLine("4. Активувати план");
+            Console.WriteLine("5. Завершити план");
+            Console.WriteLine("6. Скасувати план");
+            Console.WriteLine("7. Інформація про тип TreatmentPlan");
+            Console.WriteLine("0. Назад");
+            Console.Write("Оберіть дію: ");
+
+            string? action = Console.ReadLine();
+
+            if (action == "0")
+            {
+                break;
+            }
+            else if (action == "1")
+            {
+                TreatmentPlan[] allPlans = clinic.TreatmentPlans.GetAll();
+                if (allPlans.Length == 0)
+                {
+                    Console.WriteLine("Планів лікування немає.");
+                }
+                else
+                {
+                    foreach (TreatmentPlan plan in allPlans)
+                    {
+                        PrintPlan(plan);
+                    }
+                }
+            }
+            else if (action == "2")
+            {
+                TreatmentPlan newPlan = FormBuilder.Build<TreatmentPlan>();
+                if (clinic.TreatmentPlans.Add(newPlan))
+                {
+                    Console.WriteLine($"План додано (ID: {newPlan.Id}).");
+                }
+            }
+            else if (action == "3")
+            {
+                int patientId = ReadInt("Введіть ID пацієнта: ");
+                TreatmentPlan[] patientPlans = clinic.TreatmentPlans.GetByPatient(patientId);
+
+                if (patientPlans.Length == 0)
+                {
+                    Console.WriteLine("Планів для цього пацієнта не знайдено.");
+                }
+                else
+                {
+                    foreach (TreatmentPlan plan in patientPlans)
+                    {
+                        PrintPlan(plan);
+                    }
+                }
+            }
+            else if (action == "4")
+            {
+                int id = ReadInt("Введіть ID плану: ");
+                TreatmentPlan? plan = clinic.TreatmentPlans.GetById(id);
+
+                if (plan == null)
+                {
+                    Console.WriteLine("План не знайдено");
+                }
+                else if (plan.Activate())
+                {
+                    Console.WriteLine("План активовано.");
+                }
+                else
+                {
+                    Console.WriteLine($"Неможливо активувати план зі статусом {plan.Status}.");
+                }
+            }
+            else if (action == "5")
+            {
+                int id = ReadInt("Введіть ID плану: ");
+                TreatmentPlan? plan = clinic.TreatmentPlans.GetById(id);
+
+                if (plan == null)
+                {
+                    Console.WriteLine("План не знайдено");
+                }
+                else if (plan.Complete())
+                {
+                    Console.WriteLine("План завершено.");
+                }
+                else
+                {
+                    Console.WriteLine($"Неможливо завершити план зі статусом {plan.Status}.");
+                }
+            }
+            else if (action == "6")
+            {
+                int id = ReadInt("Введіть ID плану: ");
+                TreatmentPlan? plan = clinic.TreatmentPlans.GetById(id);
+
+                if (plan == null)
+                {
+                    Console.WriteLine("План не знайдено");
+                }
+                else if (plan.Cancel())
+                {
+                    Console.WriteLine("План скасовано.");
+                }
+                else
+                {
+                    Console.WriteLine($"Неможливо скасувати план зі статусом {plan.Status}.");
+                }
+            }
+            else if (action == "7")
+            {
+                ModelValidator.PrintInfo(typeof(TreatmentPlan));
+            }
+            else
+            {
+                Console.WriteLine("Невідомий пункт меню.");
+            }
+        }
+    }
+
+    private static int ReadInt(string prompt)
+    {
+        while (true)
+        {
+            Console.Write(prompt);
+            string? input = Console.ReadLine();
+            if (int.TryParse(input, out int number))
+            {
+                return number;
+            }
+            Console.WriteLine("[!] Введіть коректне ціле число.");
+        }
+    }
+
+    private static void PrintPlan(TreatmentPlan plan)
+    {
+        Console.WriteLine(
+            $"ID: {plan.Id} | PatientId: {plan.PatientId} | Diagnosis: \"{plan.Diagnosis}\" | " +
+            $"Duration: {plan.DurationDays} дн. | Status: {plan.Status}");
+    }
 }
+
+
 
 
