@@ -52,6 +52,7 @@ public class Program
             Console.WriteLine("7. Генерація повного звіту клініки");
             Console.WriteLine("8.Аналітика");
             Console.WriteLine("9. Управління планами лікування");
+            Console.WriteLine("10. Файли");
             Console.WriteLine("0. Вихід");
             Console.Write("Оберіть пункт: ");
 
@@ -74,7 +75,7 @@ public class Program
                     HandleBillingMenu(clinic);
                     break;
                 case "6":
-                    WaitingRoomMenu(clinic.WaitingRoom);
+                    WaitingRoomMenu(clinic);
                     break;
                 case "7":
                     clinic.GenerateReport();
@@ -84,6 +85,9 @@ public class Program
                     break;
                 case "9":
                     ShowTreatmentPlansMenu(clinic);
+                    break;
+                case "10":
+                    ShowFilesMenu(clinic);
                     break;
                 case "0":
                     exitApp = true;
@@ -95,9 +99,61 @@ public class Program
             }
         }
     }
-
-    private static void WaitingRoomMenu(WaitingQueue<Patient> waitingRoom)
+     private static void ShowFilesMenu(Clinic clinic)
     {
+        while (true)
+        {
+            Console.WriteLine("--- Файли ---");
+            Console.WriteLine("1. Останні рядки лога");
+            Console.WriteLine("2. Очистити лог");
+            Console.WriteLine("0. Назад");
+            Console.Write("Оберіть дію: ");
+
+            string? choice = Console.ReadLine();
+
+            if (choice == "0")
+            {
+                break;
+            }
+            else if (choice == "1")
+            {
+                Console.Write("Скільки останніх рядків показати (N): ");
+                string? input = Console.ReadLine();
+
+                if (int.TryParse(input, out int n) && n > 0)
+                {
+                    string[] lines = clinic.Logger.GetLastLines(n);
+                    if (lines.Length == 0)
+                    {
+                        Console.WriteLine("Лог порожній або файл ще не створено.");
+                    }
+                    else
+                    {
+                        foreach (string line in lines)
+                        {
+                            Console.WriteLine(line);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("[!] Введіть коректне додатне число N.");
+                }
+            }
+            else if (choice == "2")
+            {
+                clinic.Logger.Clear();
+                Console.WriteLine("Лог очищено.");
+            }
+            else
+            {
+                Console.WriteLine("Невідомий пункт меню.");
+            }
+        }
+    }
+    private static void WaitingRoomMenu(Clinic clinic)
+    {
+        WaitingQueue<Patient> waitingRoom = clinic.WaitingRoom;
         bool back = false;
         while (!back)
         {
@@ -117,20 +173,26 @@ public class Program
                     Console.Write("Введіть прізвище пацієнта: ");
                     string lastName = Console.ReadLine() ?? "";
                     Patient newPatient = new Patient(firstName, lastName, DateTime.Now, BloodType.Unknown, "");
+
                     waitingRoom.Enqueue(newPatient);
                     Console.WriteLine($"Пацієнт {newPatient.FullName} доданий у чергу.");
+                    clinic.Logger.LogInfo($"Пацієнт {newPatient.FullName} доданий у чергу очікування.");
                     break;
+
                 case "2":
                     if (!waitingRoom.IsEmpty)
                     {
                         Patient nextPatient = waitingRoom.Dequeue();
                         Console.WriteLine($"Пацієнт {nextPatient.FullName} прийнятий.");
+                        clinic.Logger.LogInfo($"Пацієнт {nextPatient.FullName} прийнятий з черги очікування.");
                     }
                     else
                     {
                         Console.WriteLine("Черга порожня.");
+                        clinic.Logger.LogWarning("Спроба прийняти пацієнта з порожньої черги очікування.");
                     }
                     break;
+
                 case "3":
                     if (!waitingRoom.IsEmpty)
                     {
@@ -142,6 +204,7 @@ public class Program
                         Console.WriteLine("Черга порожня.");
                     }
                     break;
+
                 case "4":
                     if (!waitingRoom.IsEmpty)
                     {
@@ -157,11 +220,14 @@ public class Program
                         Console.WriteLine("Черга порожня.");
                     }
                     break;
+
                 case "0":
                     back = true;
                     break;
+
                 default:
                     Console.WriteLine("Невідомий пункт меню.");
+                    clinic.Logger.LogWarning($"Невідомий пункт меню у черзі очікування: {choice}.");
                     break;
             }
         }
@@ -192,10 +258,12 @@ public class Program
                         clinic.Billing.DisplayUnpaid(unpaid);
                         decimal debt = clinic.Billing.GetPatientDebt(patientId);
                         Console.WriteLine($"Загальний борг пацієнта: {debt:F2} грн");
+                        clinic.Logger.LogInfo($"Переглянуто борги пацієнта з ID {patientId}. Загальний борг: {debt:F2} грн");
                     }
                     else
                     {
                         Console.WriteLine("Невірний ID.");
+                        clinic.Logger.LogWarning($"Невірний ID пацієнта: {Console.ReadLine()}");
                     }
                     break;
 
@@ -214,15 +282,18 @@ public class Program
                         if (success)
                         {
                             Console.WriteLine("Запис успішно оплачено!");
+                            clinic.Logger.LogInfo($"Запис з ID {appointmentId} успішно оплачено.");
                         }
                         else
                         {
                             Console.WriteLine("Не вдалося оплатити запис (можливо, його не існує, він уже оплачений або скасований).");
+                            clinic.Logger.LogWarning($"Не вдалося оплатити запис з ID {appointmentId}. Можливо, його не існує, він уже оплачений або скасований.");
                         }
                     }
                     else
                     {
                         Console.WriteLine("Невірний ID запису.");
+                        clinic.Logger.LogWarning($"Невірний ID запису для оплати: {Console.ReadLine()}");
                     }
                     break;
 
@@ -230,6 +301,7 @@ public class Program
                     {
                         decimal totalDebt = clinic.Billing.GetTotalDebt();
                         Console.WriteLine($"Загальний борг клініки: {totalDebt:F2} грн");
+                        clinic.Logger.LogInfo($"Переглянуто загальний борг клініки: {totalDebt:F2} грн");
                     }
                     break;
 
@@ -239,6 +311,7 @@ public class Program
 
                 default:
                     Console.WriteLine("Невірний вибір. Спробуйте ще раз.");
+                    clinic.Logger.LogWarning("Невірний вибір в меню бухгалтерії.");
                     break;
             }
         }
@@ -273,6 +346,7 @@ public class Program
                         else
                         {
                             Console.WriteLine("Повідомлення про некоректне число.");
+                          
                         }
                         break;
 
@@ -723,6 +797,7 @@ public class Program
             }
         }
     }
+    
     private static void ShowTreatmentPlansMenu(Clinic clinic)
     {
         while (true)

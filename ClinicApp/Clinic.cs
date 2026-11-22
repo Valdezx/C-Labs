@@ -4,6 +4,7 @@ using System.Text;
 using ClinicApp.Models;
 using ClinicApp.Enums;
 using ClinicApp.Managers;
+using ClinicApp.Utils;
 
 namespace ClinicApp
 {
@@ -16,6 +17,7 @@ namespace ClinicApp
         public AppointmentManager Appointments { get; }
         public BillingManager Billing { get; }
         public MedicalRecordManager MedicalRecords { get; } = new MedicalRecordManager();
+        public ClinicLogger Logger { get; }
         public Clinic(string name)
         {
             Name = name;
@@ -24,6 +26,7 @@ namespace ClinicApp
             Appointments = new AppointmentManager(Patients, Doctors);
             Billing = new BillingManager(Appointments);
             TreatmentPlans = new TreatmentPlanManager();
+            Logger = new ClinicLogger();
         }
 
         public void DisplaySchedule(DateTime date)
