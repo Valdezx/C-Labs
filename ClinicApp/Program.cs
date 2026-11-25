@@ -106,6 +106,7 @@ public class Program
             Console.WriteLine("--- Файли ---");
             Console.WriteLine("1. Останні рядки лога");
             Console.WriteLine("2. Очистити лог");
+            Console.WriteLine("3. Експортувати файли");
             Console.WriteLine("0. Назад");
             Console.Write("Оберіть дію: ");
 
@@ -126,6 +127,7 @@ public class Program
                     if (lines.Length == 0)
                     {
                         Console.WriteLine("Лог порожній або файл ще не створено.");
+                        clinic.Logger.LogError($"Спроба переглянути останні {n} рядків лога, але лог порожній або файл ще не створено.");
                     }
                     else
                     {
@@ -138,6 +140,7 @@ public class Program
                 else
                 {
                     Console.WriteLine("[!] Введіть коректне додатне число N.");
+                    clinic.Logger.LogError($"Некоректне введення для кількості рядків лога: {input}");
                 }
             }
             else if (choice == "2")
@@ -145,7 +148,12 @@ public class Program
                 clinic.Logger.Clear();
                 Console.WriteLine("Лог очищено.");
             }
-            else
+            else if (choice == "3")
+            {
+                 Console.WriteLine("Експорт звітів у текстові файли...");
+                clinic.Exporter.ExportAll();
+            }
+            else 
             {
                 Console.WriteLine("Невідомий пункт меню.");
             }
@@ -202,6 +210,7 @@ public class Program
                     else
                     {
                         Console.WriteLine("Черга порожня.");
+                        clinic.Logger.LogError("Спроба переглянути наступного пацієнта у порожній черзі очікування.");
                     }
                     break;
 
@@ -218,6 +227,7 @@ public class Program
                     else
                     {
                         Console.WriteLine("Черга порожня.");
+                        clinic.Logger.LogError($"Спроба переглянути пацієнтів у порожній черзі очікування.");
                     }
                     break;
 
@@ -227,7 +237,7 @@ public class Program
 
                 default:
                     Console.WriteLine("Невідомий пункт меню.");
-                    clinic.Logger.LogWarning($"Невідомий пункт меню у черзі очікування: {choice}.");
+                    clinic.Logger.LogError($"Невідомий пункт меню у черзі очікування: {choice}.");
                     break;
             }
         }
@@ -263,7 +273,7 @@ public class Program
                     else
                     {
                         Console.WriteLine("Невірний ID.");
-                        clinic.Logger.LogWarning($"Невірний ID пацієнта: {Console.ReadLine()}");
+                        clinic.Logger.LogError($"Невірний ID пацієнта: {Console.ReadLine()}");
                     }
                     break;
 
@@ -287,13 +297,13 @@ public class Program
                         else
                         {
                             Console.WriteLine("Не вдалося оплатити запис (можливо, його не існує, він уже оплачений або скасований).");
-                            clinic.Logger.LogWarning($"Не вдалося оплатити запис з ID {appointmentId}. Можливо, його не існує, він уже оплачений або скасований.");
+                            clinic.Logger.LogError($"Не вдалося оплатити запис з ID {appointmentId}. Можливо, його не існує, він уже оплачений або скасований.");
                         }
                     }
                     else
                     {
                         Console.WriteLine("Невірний ID запису.");
-                        clinic.Logger.LogWarning($"Невірний ID запису для оплати: {Console.ReadLine()}");
+                        clinic.Logger.LogError($"Невірний ID запису для оплати: {Console.ReadLine()}");
                     }
                     break;
 
@@ -585,6 +595,7 @@ public class Program
                         else
                         {
                             Console.WriteLine("Лікаря не знайдено.");
+                            
                         }
                     }
                     break;

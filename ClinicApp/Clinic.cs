@@ -18,6 +18,7 @@ namespace ClinicApp
         public BillingManager Billing { get; }
         public MedicalRecordManager MedicalRecords { get; } = new MedicalRecordManager();
         public ClinicLogger Logger { get; }
+        public ClinicExporter Exporter { get; }
         public Clinic(string name)
         {
             Name = name;
@@ -27,6 +28,7 @@ namespace ClinicApp
             Billing = new BillingManager(Appointments);
             TreatmentPlans = new TreatmentPlanManager();
             Logger = new ClinicLogger();
+            Exporter = new ClinicExporter(this);
         }
 
         public void DisplaySchedule(DateTime date)
