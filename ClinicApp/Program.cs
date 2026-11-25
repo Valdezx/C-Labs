@@ -90,11 +90,21 @@ public class Program
                     ShowFilesMenu(clinic);
                     break;
                 case "0":
+                    Console.Write("Зберегти сесію? (y/n): ");
+                    string? saveAnswer = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(saveAnswer) &&
+                        saveAnswer.Trim().Equals("y", StringComparison.OrdinalIgnoreCase))
+                    {
+                        clinic.Session.Save(clinic);
+                        Console.WriteLine("Сесія збережена.");
+                        clinic.Logger.LogInfo("Сесія збережена при виході з програми.");
+                    }
                     exitApp = true;
                     Console.WriteLine("Роботу завершено.");
                     break;
                 default:
                     Console.WriteLine("Невідомий пункт меню.");
+                    clinic.Logger.LogWarning($"Невідомий пункт головного меню: '{choice}'.");
                     break;
             }
         }
@@ -152,6 +162,16 @@ public class Program
             {
                  Console.WriteLine("Експорт звітів у текстові файли...");
                 clinic.Exporter.ExportAll();
+            }
+            else if (choice == "4")
+            {
+                Console.Write("Введіть шлях до CSV-файлу: ");
+                string path = Console.ReadLine() ?? "";
+
+                CsvImporter importer = new CsvImporter();
+                ImportResult importResult = importer.ImportPatients(clinic, path);
+                importResult.Print();
+                clinic.Logger.LogInfo($"Імпорт з CSV '{path}': імпортовано {importResult.Imported}, пропущено {importResult.Skipped}.");
             }
             else 
             {

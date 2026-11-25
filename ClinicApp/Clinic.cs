@@ -19,6 +19,8 @@ namespace ClinicApp
         public MedicalRecordManager MedicalRecords { get; } = new MedicalRecordManager();
         public ClinicLogger Logger { get; }
         public ClinicExporter Exporter { get; }
+        public CsvImporter Importer { get; }
+        public SessionManager Session { get; }
         public Clinic(string name)
         {
             Name = name;
@@ -29,6 +31,8 @@ namespace ClinicApp
             TreatmentPlans = new TreatmentPlanManager();
             Logger = new ClinicLogger();
             Exporter = new ClinicExporter(this);
+            Importer = new CsvImporter();
+            Session = new SessionManager();
         }
 
         public void DisplaySchedule(DateTime date)
